@@ -1,5 +1,8 @@
 package com.webtask;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.springframework.stereotype.Component;
 
 //@Component("task")
@@ -11,6 +14,8 @@ public class Task {
 	private String startdate;
 	private String duedate;
 	private Integer priority;
+	@NotNull
+	@Size(min = 2, max = 100)
 	private String remainder;
 	
 	public Task()

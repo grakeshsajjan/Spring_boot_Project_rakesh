@@ -1,19 +1,23 @@
 package com.webtask;
 
-import java.io.IOException;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.websocket.server.PathParam;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -29,9 +33,27 @@ public class TaskController {
 	@Autowired
 	private Task taskobj;
 	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	
+	@RequestMapping(value = "/exp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody Map<String, Object> testException() throws BaseException
+	{
+		throw new BaseException("Base exception thrown");
+	}
+	
+	
+	
 	@RequestMapping(value = "/task", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody List<Task> getAll()
 	{
+		
+		logger.debug("this is debug message");
+		logger.info("this is info message");
+		logger.warn("this is warn message");
+		logger.error("this is error message");
+		
+		
 		return tasks.getAll();
 	}
 	
@@ -120,5 +142,16 @@ public class TaskController {
 	return response;
 		
 	}
+	
+	//@ResponseStatus(code = HttpStatus.BAD_REQUEST, reason = "Base exception occured", value = HttpStatus.BAD_REQUEST)
+	/*@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(value = BaseException.class)
+	public Map<String, Object> beHandler(BaseException e)
+	{
+		Map<String, Object> response = new LinkedHashMap<String, Object>();
+		response.put("message", e.getMessage());
+		return response;
+		//return e.getMessage();
+	}*/
 
 }
